@@ -20,4 +20,9 @@ require (
 	github.com/libp2p/go-libp2p-core v0.2.2
 	github.com/libp2p/go-libp2p-testing v0.1.0
 	github.com/multiformats/go-multihash v0.0.8
+	metrics v0.0.0
+)
+
+replace (
+	metrics => ./../metrics/
 )

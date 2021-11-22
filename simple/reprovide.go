@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"metrics"
 	"time"
 
 	"github.com/cenkalti/backoff"
@@ -99,7 +100,10 @@ func (rp *Reprovider) Run() {
 			return
 		}
 
-		err := rp.Reprovide()
+		var err error
+		if !metrics.CMD_CloseBackProvide{
+			err = rp.Reprovide()
+		}
 
 		// only log if we've hit an actual error, otherwise just tell the client we're shutting down
 		if rp.ctx.Err() != nil {

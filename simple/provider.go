@@ -5,6 +5,8 @@ package simple
 
 import (
 	"context"
+	"fmt"
+	"metrics"
 	"time"
 
 	"github.com/ipfs/go-cid"
@@ -69,7 +71,10 @@ func (p *Provider) Close() error {
 
 // Run workers to handle provide requests.
 func (p *Provider) Run() {
-	p.handleAnnouncements()
+	if !metrics.CMD_CloseBackProvide{
+		fmt.Println("open back provider")
+		p.handleAnnouncements()
+	}
 }
 
 // Provide the given cid using specified strategy.
