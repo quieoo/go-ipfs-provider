@@ -108,22 +108,23 @@ func (q *Queue) work() {
 					c = cid.Undef
 				}
 			}
-
 			// If c != cid.Undef set dequeue and attempt write, otherwise wait for enqueue
 			var dequeue chan cid.Cid
 			if c != cid.Undef {
 				dequeue = q.dequeue
 			}
-
 			select {
 			case toQueue := <-q.enqueue:
 				keyPath := fmt.Sprintf("%d/%s", time.Now().UnixNano(), c.String())
 				nextKey := datastore.NewKey(keyPath)
 
+				// *keytransform.Datastore
+				// fmt.Printf("%s\n", reflect.TypeOf(q.ds))
 				if err := q.ds.Put(nextKey, toQueue.Bytes()); err != nil {
 					log.Errorf("Failed to enqueue cid: %s", err)
 					continue
 				}
+
 			case dequeue <- c:
 				err := q.ds.Delete(k)
 

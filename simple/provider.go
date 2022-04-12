@@ -71,7 +71,7 @@ func (p *Provider) Close() error {
 
 // Run workers to handle provide requests.
 func (p *Provider) Run() {
-	if !metrics.CMD_CloseBackProvide{
+	if !metrics.CMD_CloseBackProvide {
 		fmt.Println("open back provider")
 		p.handleAnnouncements()
 	}
@@ -79,6 +79,7 @@ func (p *Provider) Run() {
 
 // Provide the given cid using specified strategy.
 func (p *Provider) Provide(root cid.Cid) error {
+	logP.Debugf("Simple Provide %s", root)
 	return p.queue.Enqueue(root)
 }
 
@@ -91,6 +92,7 @@ func (p *Provider) handleAnnouncements() {
 				case <-p.ctx.Done():
 					return
 				case c, ok := <-p.queue.Dequeue():
+					logP.Debugf("Provider Dequeue: %s", c)
 					if !ok {
 						// queue closed.
 						return
