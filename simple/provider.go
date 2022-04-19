@@ -54,7 +54,7 @@ func NewProvider(ctx context.Context, queue *q.Queue, contentRouting routing.Con
 		ctx:            ctx,
 		queue:          queue,
 		contentRouting: contentRouting,
-		workerLimit:    8,
+		workerLimit:    metrics.ProviderWorker,
 	}
 
 	for _, option := range options {
@@ -116,8 +116,13 @@ func (p *Provider) doProvide(c cid.Cid) {
 	}
 
 	logP.Info("announce - start - ", c)
+	s := time.Now()
 	if err := p.contentRouting.Provide(ctx, c, true); err != nil {
 		logP.Warningf("Unable to provide entry: %s, %s", c, err)
+	} else {
+		fmt.Printf("    Provide %s\n", c)
+		// only record those successful provides
+		metrics.UpdateProvideMetric(s, c.String())
 	}
 	logP.Info("announce - end - ", c)
 }
