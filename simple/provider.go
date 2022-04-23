@@ -120,7 +120,7 @@ func (p *Provider) doProvide(c cid.Cid) {
 	if err := p.contentRouting.Provide(ctx, c, true); err != nil {
 		logP.Warningf("Unable to provide entry: %s, %s", c, err)
 	} else {
-		fmt.Printf("    Provide %s\n", c)
+		metrics.RecordProvide(c.String())
 		// only record those successful provides
 		metrics.UpdateProvideMetric(s, c.String())
 	}
