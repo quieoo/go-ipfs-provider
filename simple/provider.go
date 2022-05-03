@@ -116,13 +116,8 @@ func (p *Provider) doProvide(c cid.Cid) {
 	}
 
 	logP.Info("announce - start - ", c)
-	s := time.Now()
 	if err := p.contentRouting.Provide(ctx, c, true); err != nil {
 		logP.Warningf("Unable to provide entry: %s, %s", c, err)
-	} else {
-		metrics.RecordProvide(c.String())
-		// only record those successful provides
-		metrics.UpdateProvideMetric(s, c.String())
 	}
 	logP.Info("announce - end - ", c)
 }
